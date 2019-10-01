@@ -1,0 +1,24 @@
+---
+package:
+  cfssl:
+    installed: true
+port:
+  tcp:80:
+    listening: true
+    ip:
+      - 0.0.0.0
+service:
+  cfssl:
+    enabled: true
+    running: true
+user:
+  cfssl:
+    exists: true
+    groups:
+      - cfssl
+group:
+  cfssl:
+    exists: true
+process:
+  cfssl:
+    running: true

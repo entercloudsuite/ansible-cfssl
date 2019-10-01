@@ -1,0 +1,9 @@
+---
+
+- name: run the main role
+  become: true
+  become_method: sudo
+  become_user: root
+  hosts: all
+  roles:
+    - {role: ansible-cfssl}

@@ -1,0 +1,42 @@
+{
+	"builders": [{
+
+		"type": "openstack",
+		"identity_endpoint": "https://api.entercloudsuite.com/v2.0",
+		"tenant_name": "{{user `ecs_tenant`}}",
+		"username": "{{user `ecs_username`}}",
+		"password": "{{user `ecs_password`}}",
+		"region": "{{user `ecs_region`}}",
+		"image_name": "{{user `image_name`}}",
+		"source_image": "6a1e4c2b-d663-492a-a828-205f4b28d9e0",
+		"ssh_username": "ubuntu",
+		"flavor": "{{user `ecs_flavor`}}",
+		"networks": [ "{{user `ecs_network`}}" ],
+		"floating_ip_pool": "PublicNetwork"
+
+	}],
+	"provisioners": [
+		{
+			"type": "shell",
+			"inline": [
+				"sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y python2.7 python && sudo apt-get clean"
+			]
+        },
+        {
+            "type": "ansible",
+			"playbook_file": "./molecule/default/playbook_deploy.yml",
+			"ansible_env_vars": [ "ANSIBLE_ROLES_PATH=:/home/travis/build/entercloudsuite/", "ANSIBLE_HOST_KEY_CHECKING=False", "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'", "ANSIBLE_NOCOLOR=True" ]
+        }
+    ],
+    "variables": {
+		"image_name": "ecs-cfssl {{env `TRAVIS_BRANCH`}}",
+        "ecs_flavor":  "e3standard.x2",
+		"ecs_region":  "nl-ams1",
+
+        "ecs_tenant":  "{{env `OS_TENANT`}}",
+        "ecs_username":  "{{env `OS_USERNAME`}}",
+        "ecs_password":  "{{env `OS_PASSWORD`}}",
+		"ecs_network":  "{{env `OS_NETWORK`}}"
+
+    }
+}

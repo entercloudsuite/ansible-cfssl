@@ -1,0 +1,9 @@
+---
+version: '3'
+services:
+  molecule:
+    image: fminzoni/molecule
+    volumes:
+      - .:/root/src/ansible-cfssl
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /root/src/ansible-cfssl
