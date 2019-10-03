@@ -12,7 +12,4 @@ galaxy_info:
   galaxy_tags:
     - molecule
 
-dependencies:
-  - {role: galaxy.cfssl, version: 1.1.1}
-  # List your role dependencies here, one per line.
-
+dependencies: []

@@ -1,0 +1,41 @@
+
+# Pause for 5 minutes to build app cache.
+- name: random wait
+  pause:
+    seconds: "{{ (3,15) | random }}"
+
+- name: Create Certs | create CA in "{{ certificate_directive.ca.path }}" wit conf "{{ certificate_directive.ca.configurations_path }}"
+  shell: "cfssl gencert -initca {{ certificate_directive.ca.configurations_path }} | cfssljson -bare {{ certificate_directive.ca.certificate_name }}"
+  args:
+    chdir: "{{ certificate_directive.ca.path }}/"
+    creates: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
+  delegate_to: "{{ keyring_host }}"
+  
+
+- name: Create Certs | create  in "{{ certificate_directive.intermediate_ca.path }}" wit conf "{{ certificate_directive.intermediate_ca.configurations_path }}"
+  shell: "cfssl gencert -initca {{ certificate_directive.intermediate_ca.configurations_path }} | cfssljson -bare {{ certificate_directive.intermediate_ca.certificate_name }}"
+  args:
+    chdir: "{{ certificate_directive.intermediate_ca.path }}/"
+    creates: "{{ certificate_directive.intermediate_ca.path }}/{{ certificate_directive.intermediate_ca.certificate_name }}.pem"
+  delegate_to: "{{ keyring_host }}"
+
+- name: Create Certs | create  in "{{ certificate_directive.intermediate_ca.path }}" wit conf "{{ certificate_directive.intermediate_ca.configurations_path }}"
+  shell: "cfssl gencert -initca {{ certificate_directive.intermediate_ca.configurations_path }} | cfssljson -bare {{ certificate_directive.intermediate_ca.certificate_name }}"
+  args:
+    chdir: "{{ certificate_directive.intermediate_ca.path }}/"
+    creates: "{{ certificate_directive.intermediate_ca.path }}/{{ certificate_directive.intermediate_ca.certificate_name }}.pem"
+  delegate_to: "{{ keyring_host }}"
+
+- name: Create Certs | create  in "{{ node_certificate.path }}" wit conf "{{ node_certificate.configurations_path }}"
+  shell: "cfssl gencert -initca {{ node_certificate.configurations_path }} | cfssljson -bare {{ node_certificate.certificate_name }}"
+  args:
+    chdir: "{{ node_certificate.path }}/"
+    creates: "{{ node_certificate.path }}/{{ node_certificate.certificate_name }}.pem"
+  delegate_to: "{{ keyring_host }}"
+
+- name: Create Certs | copy ca-crt to node folder
+  copy:
+    src: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
+    dest: "{{ node_certificate.path }}/ca.pem"
+    remote_src: yes
+  delegate_to: "{{ keyring_host }}"

@@ -1,6 +1,7 @@
 ---
 
 - name: run the main role
-  hosts: all
+  hosts: elk
+  gather_facts: true
   roles:
-    - {role: ansible-cfssl}
+    - role: ansible-cfssl

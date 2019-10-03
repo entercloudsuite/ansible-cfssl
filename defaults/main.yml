@@ -1,2 +1,135 @@
 ---
-# defaults vars
+cfssl_pkg_download_base_version: "R1.2"
+cfssl_pkg_download_base_os: linux
+cfssl_pkg_download_base_architecture: amd64
+cfssl_pkg_download_base_path: /usr/local/bin
+cfssl_pkg_cfssl:
+  url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+  path: "{{ cfssl_pkg_download_base_path }}/cfssl"
+  checksum: sha256:eb34ab2179e0b67c29fd55f52422a94fe751527b06a403a79325fed7cf0145bd
+cfssl_pkg_cfssljson:
+  url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssljson_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+  path: "{{ cfssl_pkg_download_base_path }}/cfssljson"
+  checksum: sha256:1c9e628c3b86c3f2f8af56415d474c9ed4c8f9246630bd21c3418dbe5bf6401e
+
+download_list:
+  - "{{ cfssl_pkg_cfssl }}"
+  - "{{ cfssl_pkg_cfssljson }}"
+
+organizations: private_cert
+certificate_configurations_base_path: /etc/cfssl
+certificate_configurations_base_path_organizations: "{{ certificate_configurations_base_path }}/{{ organizations }}"
+certificate_base_path: "/etc/ssl/private/{{ organizations }}"
+
+dir_list:
+  - /etc/ssl/private/
+  - "{{ certificate_base_path }}"
+  - "{{ certificate_configurations_base_path }}}"
+  - "{{ certificate_configurations_base_path_organizations }}"
+
+keyring_host: keyring
+node_locations: /etc/elasticseach/certificates/
+
+base_domain: example.it
+
+certificate_directive:
+  ca:
+    path: "{{ certificate_base_path }}/ca"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/ca.json"
+    certificate_name: ca
+    configuration:
+      CN: Example CA
+      key:
+        algo: rsa
+        size: 2048
+      names:
+      - C: IT
+        L: Milano
+        O: Example, SPA
+        OU: MyService Cluster Company SPA
+        ST: Italy
+      ca:
+        expiry: 42720h
+
+  intermediate_ca:
+    path: "{{ certificate_base_path }}/intermediate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate-ca.json"
+    certificate_name: intermediate_ca
+    configuration:
+      CN: Example-intermediate-CA
+      key:
+        algo: rsa
+        size: 2048
+      names:
+      - C: IT
+        L: Milano
+        O: Example, SPA
+        OU: ElasticSeach Cluster Example SPA
+        ST: Italy
+      ca:
+        expiry: 42720h
+  intermediate_conf:
+    path: "{{ certificate_base_path }}/intermediate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate.json"
+    configuration:
+      signing:
+        default:
+          expiry: 43800h
+        profiles:
+          cluster:
+            usages:
+            - signing
+            - key encipherment
+            - cert sign
+            - crl sign
+            - server auth
+            - client auth
+            ca_constraint:
+              is_ca: true
+          development:
+            usages:
+            - signing
+            - key encipherment
+            - cert sign
+            - crl sign
+            ca_constraint:
+              is_ca: true
+  certificate_config:
+    path: "{{ certificate_base_path }}/certificate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/certificate.json"
+    configuration:
+      signing:
+        default:
+          expiry: 43800h
+        profiles:
+          server:
+            usages:
+            - signing
+            - digital signing
+            - key encipherment
+            - server auth
+          peer:
+            usages:
+            - signing
+            - digital signature
+            - key encipherment
+            - client auth
+            - server auth
+          client:
+            usages:
+            - signing
+            - digital signature
+            - key encipherment
+            - client auth
+
+node_certificate:
+  path: "{{ certificate_base_path }}/node/{{ ansible_hostname }}"
+  configurations_path: "{{ certificate_configurations_base_path_organizations }}/node-{{ansible_hostname}}.json"
+  certificate_name: server
+  configuration:
+    CN: Server
+    hosts:
+    - 127.0.0.1
+    - localhost
+    - "{{ ansible_hostname }}.{{ base_domain }}"
+    - "{{ ansible_fqdn }}"

@@ -1,0 +1,35 @@
+- name: Install cert | Create folder in nodes
+  debug:
+    msg: "{{ item }}"
+  with_items: "{{ node_locations.split('/') }}"
+
+- name: install cert | Create random string
+  set_fact:
+    tmp_folder: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+  delegate_to: "localhost"
+
+- name: install cert | Create var wit random_path
+  set_fact:
+    random_path: "/tmp/{{tmp_folder}}/"
+  delegate_to: "localhost"
+
+- name: create file in local bastion
+  file:
+    state: directory
+    dest: "{{ random_path }}"
+  delegate_to: "localhost"
+
+
+- name: Install cert | copy cert from keyring local bastion
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ random_path }}"
+    flat: yes
+  delegate_to: "{{ keyring_host }}"
+  with_fileglob: 
+    - "{{ node_certificate.path }}/*"
+
+- name: Install cert | syncronize cert to remote instance
+  synchronize:
+    src: "{{ random_path }}"
+    dest: "{{ node_locations }}"

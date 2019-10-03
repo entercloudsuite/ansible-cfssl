@@ -6,7 +6,18 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: instance-1
+  - name: node-1
+    groups:
+      - elk
+  - name: node-2
+    groups:
+      - elk
+  - name: node-3
+    groups:
+      - elk
+  - name: keyring
+    groups:
+      - keyring
 provisioner:
   name: ansible
   options:

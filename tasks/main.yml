@@ -1,2 +1,9 @@
 ---
-# tasks
+- name: main | Run installation playbook
+  include: install_cfssl.yml
+
+- name: main | import create certs
+  import_tasks: create_cert.yml
+
+- name: main | import create certs
+  import_tasks: install_certificate.yaml
