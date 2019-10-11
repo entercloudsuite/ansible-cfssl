@@ -10,9 +10,67 @@ Installs cfssl on Ubuntu 16.04 (Xenial)
 
 This role requires Ansible 2.4 or higher.
 
+
+# Roles Host roles
+Keyring
+in this node will create CA, all node cert and key will generate on this node and copy to node.
+Node: give fact for cert generations.
+
+```
++-----------+
+|           | <-- node-0.cert node-0.key node-0...
+|  node-0   |
+|           |
++-----------+                                                +-------------+
+                                                             |   Bastion   |
++-----------+                                                |             |
+|           | <-- node-1.cert node-0.key node-0...           |             |
+|  node-1   |                                                +-------------+
+|           | 
++-----------+
+   .....
++-----------+
+|           | <-- node-n.cert node-0.key node-0...
+| node-n    |
+|           |
++-----------+
+
+
++-----------+
+|           |
+| keyring   |   <-- ca-key
+|           |   <-- certificate generations
++-----------+   <-- node-0.cert node-0.key node-1.cert node-1.key node-n.cert node-n.key
+```
+
 ## Role Variables
 
-The role defines most of its variables in `defaults/main.yml`:
+The role defines its variables in `defaults/main.yml`:  
+
+**download_list**: define pakage will be installed in keyring host
+```yaml
+download_list:
+  - "{{ cfssl_pkg.cfssl }}"
+  - "{{ cfssl_pkg.cfssljson }}"
+  - "{{ cfssl_pkg.cfssl_bundle }}"
+  - "{{ cfssl_pkg.cfssl_certinfo }}"
+  - "{{ cfssl_pkg.cfssl_newkey }}"
+  - "{{ cfssl_pkg.cfssl_scan }}"
+  - "{{ cfssl_pkg.mkbundle }}"
+  - "{{ cfssl_pkg.multirootca }}"
+```
+
+
+**organizations:** Organizations Name
+```
+certificate_configurations_base_path: /etc/cfssl
+certificate_configurations_base_path_organizations: "{{ certificate_configurations_base_path }}/{{ organizations }}"
+certificate_base_path: "/etc/ssl/private/{{ organizations }}"
+```
+
+**keyring_host:** name of keyring host
+
+**certificate_directive** cfssl configurations
 
 ## Example Playbook
 
