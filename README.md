@@ -13,7 +13,7 @@ This role requires Ansible 2.4 or higher.
 
 # Roles Host roles
 Keyring
-in this node will create CA, all node cert and key will generate on this node and copy to node.
+in this node will create CA, all cert and key will generate on this host and a copy of cert will ship to right nodes
 Node: give fact for cert generations.
 
 ```
