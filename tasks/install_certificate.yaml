@@ -5,7 +5,7 @@
 
 - name: install cert | Create random string
   set_fact:
-    tmp_folder: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+    tmp_folder: "TMP_FOLDER_{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   delegate_to: "localhost"
 
 - name: install cert | Create var wit random_path
@@ -19,17 +19,34 @@
     dest: "{{ random_path }}"
   delegate_to: "localhost"
 
+- name: debug
+  debug:
+    var: item
+  delegate_to: "{{ keyring_host }}"
+  with_fileglob:
+    - "/tmp/*"
+
+- name: install cert | get list of file in remoe locations
+  command: "ls {{ node_certificate.path }}"
+  register: path_files
+  delegate_to: "{{ keyring_host }}"
+
+- name: debug
+  debug:
+    var: item
+  with_items: "{{ path_files.stdout_lines }}"
 
 - name: Install cert | copy cert from keyring local bastion
   fetch:
-    src: "{{ item }}"
+    src: "{{ node_certificate.path }}/{{ item }}"
     dest: "{{ random_path }}"
     flat: yes
   delegate_to: "{{ keyring_host }}"
-  with_fileglob: 
-    - "{{ node_certificate.path }}/*"
+  with_items: "{{ path_files.stdout_lines }}"
 
-- name: Install cert | syncronize cert to remote instance
-  synchronize:
-    src: "{{ random_path }}"
+- name: Install cert | copy cert to node
+  copy:
+    src: "{{ item }}"
     dest: "{{ node_locations }}"
+  with_fileglob: 
+    - "{{ random_path }}/*"

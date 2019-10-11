@@ -1,0 +1,13 @@
+---
+- name: conf | Create cfssl configurations
+  copy:
+    content: "{{ item.value.configuration | to_nice_json }}"
+    dest: "{{ item.value.configurations_path }}"
+  with_items: "{{ certificate_directive | dict2items }}"
+  delegate_to:  "{{ keyring_host }}"
+
+- name: conf | Create cfssl Node
+  copy:
+    content: "{{ node_certificate.configuration | to_nice_json }}"
+    dest: "{{ node_certificate.configurations_path }}"
+  delegate_to:  "{{ keyring_host }}"

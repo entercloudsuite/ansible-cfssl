@@ -1,6 +1,9 @@
 ---
-- name: main | Run installation playbook
-  include: install_cfssl.yml
+- name: main | install cfssl in host
+  import_tasks: install_cfssl.yml
+
+- name: main | create configurations file
+  import_tasks: conf.yml
 
 - name: main | import create certs
   import_tasks: create_cert.yml
