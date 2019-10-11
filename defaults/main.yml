@@ -3,18 +3,49 @@ cfssl_pkg_download_base_version: "R1.2"
 cfssl_pkg_download_base_os: linux
 cfssl_pkg_download_base_architecture: amd64
 cfssl_pkg_download_base_path: /usr/local/bin
-cfssl_pkg_cfssl:
-  url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
-  path: "{{ cfssl_pkg_download_base_path }}/cfssl"
-  checksum: sha256:eb34ab2179e0b67c29fd55f52422a94fe751527b06a403a79325fed7cf0145bd
-cfssl_pkg_cfssljson:
-  url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssljson_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
-  path: "{{ cfssl_pkg_download_base_path }}/cfssljson"
-  checksum: sha256:1c9e628c3b86c3f2f8af56415d474c9ed4c8f9246630bd21c3418dbe5bf6401e
+cfssl_pkg:
+  cfssl:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssl"
+    checksum: sha256:eb34ab2179e0b67c29fd55f52422a94fe751527b06a403a79325fed7cf0145bd
+  cfssljson:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssljson_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssljson"
+    checksum: sha256:1c9e628c3b86c3f2f8af56415d474c9ed4c8f9246630bd21c3418dbe5bf6401e
+  cfssl_bundle:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl-bundle_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssl-bundle"
+    checksum: sha256:c0ad5348ede0b8038872bf06bab1f81657b710392371c5db10bd8372336ebd0f
+  cfssl_certinfo:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl-certinfo_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssl-certinfo"
+    checksum: sha256:ad395c35824bdff343189188658f15810d137c230463810026c6f04f3f78f08f
+  cfssl_newkey:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl-newkey_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssl-newkey"
+    checksum: sha256:eb58dfa8c8115b59f28d8444b1007c7be169814d24b8702d34dace3b208b3b20
+  cfssl_scan:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/cfssl-scan_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/cfssl-scan"
+    checksum: sha256:1eb88a7898ac9006584fc689ff8c29f1ad9837d9fbf794fa7c62976fd8b490a3
+  mkbundle:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/mkbundle_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/mkbundle"
+    checksum: sha256:88f90fa9120662c3acdbbedd22306f4cf7ae71e9708838a6d5c8f1652b5bf747
+  multirootca:
+    url: "https://pkg.cfssl.org/{{cfssl_pkg_download_base_version}}/multirootca_{{ cfssl_pkg_download_base_os }}-{{ cfssl_pkg_download_base_architecture }}"
+    path: "{{ cfssl_pkg_download_base_path }}/multirootca"
+    checksum: sha256:7b7884ae113eb7693591194399d424bd39902252c3198d6dea075ac98b3f275d
 
 download_list:
-  - "{{ cfssl_pkg_cfssl }}"
-  - "{{ cfssl_pkg_cfssljson }}"
+  - "{{ cfssl_pkg.cfssl }}"
+  - "{{ cfssl_pkg.cfssljson }}"
+  - "{{ cfssl_pkg.cfssl_bundle }}"
+  - "{{ cfssl_pkg.cfssl_certinfo }}"
+  - "{{ cfssl_pkg.cfssl_newkey }}"
+  - "{{ cfssl_pkg.cfssl_scan }}"
+  - "{{ cfssl_pkg.mkbundle }}"
+  - "{{ cfssl_pkg.multirootca }}"
 
 organizations: private_cert
 certificate_configurations_base_path: /etc/cfssl
@@ -28,7 +59,11 @@ dir_list:
   - "{{ certificate_configurations_base_path_organizations }}"
 
 keyring_host: keyring
-node_locations: /etc/elasticseach/certificates/
+node_locations: /etc/ssl/elasticseach/node
+create_node_list:
+  - /etc/ssl
+  - /etc/ssl/elasticseach
+  - /etc/ssl/elasticseach/node
 
 base_domain: example.it
 

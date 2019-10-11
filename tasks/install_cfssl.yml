@@ -3,9 +3,8 @@
   debug:
     msg: download from {{ item.url }} to {{ item.path }}
   with_items: "{{ download_list }}"
-  delegate_to: "{{ keyring_host }}"
 
-- name: install cfssl | Download pakage neaded from download List
+- name: install cfssl | Download pakage
   get_url:
     url: "{{ item.url }}"
     dest:  "{{ item.path }}"
@@ -14,12 +13,18 @@
   with_items: "{{ download_list }}"
   delegate_to: "{{ keyring_host }}"
 
-- name: install cfssl | Create directory tree
+- name: install cfssl | Create directory tree on "{{ keyring_host }}"
   file:
     state: directory
     dest: "{{ item }}"
   with_items: "{{ dir_list }}"
   delegate_to: "{{ keyring_host }}"
+
+- name: install cfssl | Create directory tree on nodes
+  file:
+    state: directory
+    dest: "{{ item }}"
+  with_items: "{{ create_node_list }}"
 
 - name: install cfssl | Create certificate dir
   file:
