@@ -60,9 +60,9 @@ dir_list:
 
 keyring_host: keyring
 node_locations: /etc/ssl/elasticsearch/
-mode: "0644"
-owner: "elasticsearch"
-group: "elasticsearch"
+node_cert_mode: "0644"
+node_cert_user_owner: "elasticsearch"
+node_cert_user_group: "elasticsearch"
 
 create_node_list:
   - /etc/ssl
