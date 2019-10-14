@@ -48,5 +48,8 @@
   copy:
     src: "{{ item }}"
     dest: "{{ node_locations }}"
+    mode: "{{ node_cert_mode }}"
+    owner: "{{ node_cert_user_owner }}"
+    group: "{{ node_cert_user_group }}"
   with_fileglob: 
     - "{{ random_path }}/*"
