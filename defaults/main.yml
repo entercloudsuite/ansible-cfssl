@@ -59,15 +59,14 @@ dir_list:
   - "{{ certificate_configurations_base_path_organizations }}"
 
 keyring_host: keyring
-node_locations: /etc/ssl/elasticsearch/
+node_locations: /etc/myservice/cert
 node_cert_mode: "0644"
-node_cert_user_owner: "elasticsearch"
-node_cert_user_group: "elasticsearch"
+node_cert_user_owner: "root"
+node_cert_user_group: "root"
 
 create_node_list:
-  - /etc/ssl
-  - /etc/ssl/elasticseach
-  - /etc/ssl/elasticseach/node
+  - /etc/myservice/
+  - /etc/myservice/cert
 
 base_domain: example.it
 
