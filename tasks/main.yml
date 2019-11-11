@@ -3,9 +3,9 @@
   import_tasks: install_cfssl.yml
   when: install
 
-# - name: main | create configurations file
-#   import_tasks: conf.yml
-#   when: configure
+- name: main | create configurations file
+  import_tasks: conf.yml
+  when: configure
 # 
 # - name: main | import create certs
 #   import_tasks: create_cert.yml

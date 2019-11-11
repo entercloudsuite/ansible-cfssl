@@ -11,9 +11,3 @@
     checksum: "{{ item.checksum }}"
     mode: '0550'
   with_items: "{{ download_list }}"
-
-- name: install cfssl | Create directory tree
-  file:
-    state: directory
-    dest: "{{ item }}"
-  with_items: "{{ dir_list }}"
