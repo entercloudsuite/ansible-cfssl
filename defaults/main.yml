@@ -53,7 +53,6 @@ organizations: private_cert
 certificate_configurations_base_path: /etc/cfssl
 certificate_configurations_base_path_organizations: "{{ certificate_configurations_base_path }}/{{ organizations }}"
 certificate_base_path: "/etc/ssl/private/{{ organizations }}"
-/etc/kubernetes/pki/etcd#
 dir_list:
   - /etc/ssl/private/
   - "{{ certificate_base_path }}"
