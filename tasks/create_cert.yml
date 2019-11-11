@@ -1,3 +1,39 @@
+- name: Create Certs | Create directory tree on nodes
+  file:
+    state: directory
+    dest: "{{ item }}"
+  with_items: "{{ create_node_list }}"
+
+- name: Create Certs | Create certificate dir
+  file:
+    state: directory
+    dest: "{{ item.value.path }}"
+  with_items: "{{ certificate_directive | dict2items }}"
+
+- name: Create Certs | Create directory tree
+  debug:
+    var: item
+  with_items: "{{ certificate_directive | dict2items }}"
+
+- name: Create Certs | Create cfssl configurations
+  copy:
+    content: "{{ item.value.configuration | to_nice_json }}"
+    dest: "{{ item.value.configurations_path }}"
+  with_items: "{{ certificate_directive | dict2items }}"
+
+- name: Create Certs | Create certificate dir
+  file:
+    state: directory
+    dest: "{{ node_certificate.path }}"
+
+- name: debug
+  debug:
+    var: node_certificate.configuration
+
+- name: Create Certs | Create cfssl Node
+  copy:
+    content: "{{ node_certificate.configuration | to_nice_json }}"
+    dest: "{{ node_certificate.configurations_path }}"
 
 # Pause for 5 minutes to build app cache.
 - name: random wait
