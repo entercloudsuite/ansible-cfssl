@@ -1,7 +1,17 @@
 ---
 
-- name: run the main role
-  hosts: elk
+- name: just install cfssl
+  hosts: install
   gather_facts: true
   roles:
     - role: ansible-cfssl
+      install: True
+      configure: False
+
+- name: install and configure
+  hosts: install
+  gather_facts: true
+  roles:
+    - role: ansible-cfssl
+      install: True
+      configure: False

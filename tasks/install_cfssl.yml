@@ -7,7 +7,7 @@
 - name: install cfssl | Download pakage
   get_url:
     url: "{{ item.url }}"
-    dest:  "{{ item.path }}"
+    dest: "{{ item.path }}"
     checksum: "{{ item.checksum }}"
     mode: '0550'
   with_items: "{{ download_list }}"

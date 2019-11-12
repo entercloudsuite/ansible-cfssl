@@ -1,3 +1,4 @@
+---
 - name: Create Certs | Create directory tree on nodes
   file:
     state: directory
@@ -46,7 +47,6 @@
     chdir: "{{ certificate_directive.ca.path }}/"
     creates: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
   delegate_to: "{{ keyring_host }}"
-  
 
 - name: Create Certs | create  in "{{ certificate_directive.intermediate_ca.path }}" wit conf "{{ certificate_directive.intermediate_ca.configurations_path }}"
   shell: "cfssl gencert -initca {{ certificate_directive.intermediate_ca.configurations_path }} | cfssljson -bare {{ certificate_directive.intermediate_ca.certificate_name }}"

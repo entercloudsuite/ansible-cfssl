@@ -59,116 +59,116 @@ dir_list:
   - "{{ certificate_configurations_base_path }}"
   - "{{ certificate_configurations_base_path_organizations }}"
 
-# keyring_host: keyring
-# node_locations: /etc/myservice/cert
-# node_cert_mode: "0644"
-# node_cert_user_owner: "root"
-# node_cert_user_group: "root"
-# 
-# create_node_list:
-#   - /etc/myservice/
-#   - /etc/myservice/cert
-# 
-# base_domain: example.it
-# 
-# certificate_directive:
-#   ca:
-#     path: "{{ certificate_base_path }}/ca"
-#     configurations_path: "{{ certificate_configurations_base_path_organizations }}/ca.json"
-#     certificate_name: ca
-#     configuration:
-#       CN: Example CA
-#       key:
-#         algo: rsa
-#         size: 2048
-#       names:
-#       - C: IT
-#         L: Milano
-#         O: Example, SPA
-#         OU: MyService Cluster Company SPA
-#         ST: Italy
-#       ca:
-#         expiry: 42720h
-# 
-#   intermediate_ca:
-#     path: "{{ certificate_base_path }}/intermediate"
-#     configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate-ca.json"
-#     certificate_name: intermediate_ca
-#     configuration:
-#       CN: Example-intermediate-CA
-#       key:
-#         algo: rsa
-#         size: 2048
-#       names:
-#       - C: IT
-#         L: Milano
-#         O: Example, SPA
-#         OU: MyService Cluster Company SPA
-#         ST: Italy
-#       ca:
-#         expiry: 42720h
-#   intermediate_conf:
-#     path: "{{ certificate_base_path }}/intermediate"
-#     configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate.json"
-#     configuration:
-#       signing:
-#         default:
-#           expiry: 43800h
-#         profiles:
-#           cluster:
-#             usages:
-#             - signing
-#             - key encipherment
-#             - cert sign
-#             - crl sign
-#             - server auth
-#             - client auth
-#             ca_constraint:
-#               is_ca: true
-#           development:
-#             usages:
-#             - signing
-#             - key encipherment
-#             - cert sign
-#             - crl sign
-#             ca_constraint:
-#               is_ca: true
-#   certificate_config:
-#     path: "{{ certificate_base_path }}/certificate"
-#     configurations_path: "{{ certificate_configurations_base_path_organizations }}/certificate.json"
-#     configuration:
-#       signing:
-#         default:
-#           expiry: 43800h
-#         profiles:
-#           server:
-#             usages:
-#             - signing
-#             - digital signing
-#             - key encipherment
-#             - server auth
-#           peer:
-#             usages:
-#             - signing
-#             - digital signature
-#             - key encipherment
-#             - client auth
-#             - server auth
-#           client:
-#             usages:
-#             - signing
-#             - digital signature
-#             - key encipherment
-#             - client auth
-# 
-# node_certificate:
-#   path: "{{ certificate_base_path }}/node/{{ ansible_hostname }}"
-#   configurations_path: "{{ certificate_configurations_base_path_organizations }}/node-{{ansible_hostname}}.json"
-#   certificate_name: server
-#   configuration:
-#     CN: Server
-#     hosts:
-#     - 127.0.0.1
-#     - localhost
-#     - "{{ ansible_hostname }}.{{ base_domain }}"
-#     - "{{ ansible_fqdn }}"
+keyring_host: keyring
+node_locations: /etc/myservice/cert
+node_cert_mode: "0644"
+node_cert_user_owner: "root"
+node_cert_user_group: "root"
+
+create_node_list:
+  - /etc/myservice/
+  - /etc/myservice/cert
+
+base_domain: example.it
+
+certificate_directive:
+  ca:
+    path: "{{ certificate_base_path }}/ca"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/ca.json"
+    certificate_name: ca
+    configuration:
+      CN: Example CA
+      key:
+        algo: rsa
+        size: 2048
+      names:
+        - C: IT
+          L: Milano
+          O: Example, SPA
+          OU: MyService Cluster Company SPA
+          ST: Italy
+      ca:
+        expiry: 42720h
+
+  intermediate_ca:
+    path: "{{ certificate_base_path }}/intermediate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate-ca.json"
+    certificate_name: intermediate_ca
+    configuration:
+      CN: Example-intermediate-CA
+      key:
+        algo: rsa
+        size: 2048
+      names:
+        - C: IT
+          L: Milano
+          O: Example, SPA
+          OU: MyService Cluster Company SPA
+          ST: Italy
+      ca:
+        expiry: 42720h
+  intermediate_conf:
+    path: "{{ certificate_base_path }}/intermediate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate.json"
+    configuration:
+      signing:
+        default:
+          expiry: 43800h
+        profiles:
+          cluster:
+            usages:
+              - signing
+              - key encipherment
+              - cert sign
+              - crl sign
+              - server auth
+              - client auth
+            ca_constraint:
+              is_ca: true
+          development:
+            usages:
+              - signing
+              - key encipherment
+              - cert sign
+              - crl sign
+            ca_constraint:
+              is_ca: true
+  certificate_config:
+    path: "{{ certificate_base_path }}/certificate"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/certificate.json"
+    configuration:
+      signing:
+        default:
+          expiry: 43800h
+        profiles:
+          server:
+            usages:
+              - signing
+              - digital signing
+              - key encipherment
+              - server auth
+          peer:
+            usages:
+              - signing
+              - digital signature
+              - key encipherment
+              - client auth
+              - server auth
+          client:
+            usages:
+              - signing
+              - digital signature
+              - key encipherment
+              - client auth
+
+node_certificate:
+  path: "{{ certificate_base_path }}/node/{{ ansible_hostname }}"
+  configurations_path: "{{ certificate_configurations_base_path_organizations }}/node-{{ansible_hostname}}.json"
+  certificate_name: server
+  configuration:
+    CN: Server
+    hosts:
+      - 127.0.0.1
+      - localhost
+      - "{{ ansible_hostname }}.{{ base_domain }}"
+      - "{{ ansible_fqdn }}"

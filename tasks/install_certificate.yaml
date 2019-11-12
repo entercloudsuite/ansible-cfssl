@@ -1,3 +1,4 @@
+---
 - name: Install cert | Create folder in nodes
   debug:
     msg: "{{ item }}"
@@ -51,5 +52,5 @@
     mode: "{{ node_cert_mode }}"
     owner: "{{ node_cert_user_owner }}"
     group: "{{ node_cert_user_group }}"
-  with_fileglob: 
+  with_fileglob:
     - "{{ random_path }}/*"

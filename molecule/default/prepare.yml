@@ -4,10 +4,10 @@
   gather_facts: False
   tasks:
   - name: Use cloudFlare DNS
-    raw:   echo "nameserver 1.1.1.1" > /etc/resolv.conf
+    raw: echo "nameserver 1.1.1.1" > /etc/resolv.conf
   - name: install ansible prerequisite (python)
     raw: test -e /usr/bin/python || ( apt update -y && apt install python-minimal -y )
-  
+
 - hosts: all
   gather_facts: true
   tasks:

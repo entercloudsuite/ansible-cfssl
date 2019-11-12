@@ -6,11 +6,3 @@
 - name: main | create configurations file
   import_tasks: conf.yml
   when: configure
-# 
-# - name: main | import create certs
-#   import_tasks: create_cert.yml
-#   when: configure
-# 
-# - name: main | import create certs
-#   import_tasks: install_certificate.yaml
-#   when: configure

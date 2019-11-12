@@ -8,16 +8,10 @@ lint:
 platforms:
   - name: node-1
     groups:
-      - elk
+      - configure
   - name: node-2
     groups:
-      - elk
-  - name: node-3
-    groups:
-      - elk
-  - name: keyring
-    groups:
-      - keyring
+      - install
 provisioner:
   name: ansible
   options:
