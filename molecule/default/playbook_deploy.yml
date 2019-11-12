@@ -6,4 +6,4 @@
   become_user: root
   hosts: all
   roles:
-    - {role: ansible-cfssl}
+    - { role: ansible-cfssl }
