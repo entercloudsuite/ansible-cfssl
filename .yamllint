@@ -8,6 +8,7 @@ rules:
 
   # Max 1 space to separate the elements in brakets
   braces:
+    min-spaces-inside: 1
     max-spaces-inside: 1
 
   # Max 1 space in empty brackets
