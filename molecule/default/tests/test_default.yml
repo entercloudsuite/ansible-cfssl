@@ -1,24 +1,49 @@
 ---
-package:
-  cfssl:
-    installed: true
-port:
-  tcp:80:
-    listening: true
-    ip:
-      - 0.0.0.0
-service:
-  cfssl:
-    enabled: true
-    running: true
-user:
-  cfssl:
+file:
+  /file:
+    exists: false
+    contains: []
+  /usr/local/bin/cfssl:
     exists: true
-    groups:
-      - cfssl
-group:
-  cfssl:
+    mode: "0550"
+    size: 10376657
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/cfssl_bundle:
+    exists: false
+    contains: []
+  /usr/local/bin/cfssl_certinfo:
+    exists: false
+    contains: []
+  /usr/local/bin/cfssl_newkey:
+    exists: false
+    contains: []
+  /usr/local/bin/cfssl_scan:
+    exists: false
+    contains: []
+  /usr/local/bin/cfssljson:
     exists: true
-process:
-  cfssl:
-    running: true
+    mode: "0550"
+    size: 2277873
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/mkbundle:
+    exists: true
+    mode: "0550"
+    size: 6139443
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/multirootca:
+    exists: true
+    mode: "0550"
+    size: 8321565
+    owner: root
+    group: root
+    filetype: file
+    contains: []
