@@ -1,17 +1,17 @@
 ---
 
 - name: just install cfssl
-  hosts: install
+  hosts: node-1
   gather_facts: true
   roles:
     - role: ansible-cfssl
       install: True
-      configure: False
+      configure: True
 
-- name: install and configure
-  hosts: configure
-  gather_facts: true
-  roles:
-    - role: ansible-cfssl
-      install: True
-      configure: False
+# - name: install and configure
+#   hosts: configure
+#   gather_facts: true
+#   roles:
+#     - role: ansible-cfssl
+#       install: True
+#       configure: False

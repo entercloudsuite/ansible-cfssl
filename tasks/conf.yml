@@ -1,12 +1,1 @@
----
-- name: conf | Create directory tree
-  file:
-    state: directory
-    dest: "{{ item }}"
-  with_items: "{{ dir_list }}"
 
-- name: conf | Create cfssl configurations
-  copy:
-    content: "{{ item.value.configuration | to_nice_json }}"
-    dest: "{{ item.value.configurations_path }}"
-  with_items: "{{ certificate_directive | dict2items }}"

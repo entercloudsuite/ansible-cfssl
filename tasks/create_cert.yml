@@ -1,77 +1,49 @@
 ---
-- name: Create Certs | Create directory tree on nodes
-  file:
-    state: directory
-    dest: "{{ item }}"
-  with_items: "{{ create_node_list }}"
+#- name: random wait
+#  pause:
+#    seconds: "{{ (3,15) | random }}"
 
-- name: Create Certs | Create certificate dir
-  file:
-    state: directory
-    dest: "{{ item.value.path }}"
-  with_items: "{{ certificate_directive | dict2items }}"
+# - name: Debug
+#   debug:
+#     var: item.value.chdir
+#   with_items: "{{ command_run | dict2items }}"
+# 
+# - name: show vars
+#   debug:
+#     msg: "{{ node_certificate.configuration | to_json }}"
 
-- name: Create Certs | Create directory tree
-  debug:
+- name: show vars
+  debug: 
     var: item
   with_items: "{{ certificate_directive | dict2items }}"
 
-- name: Create Certs | Create cfssl configurations
+- name: conf | Create directory tree
+  file:
+    state: directory
+    dest: "{{ item }}"
+  with_items: "{{ dir_list }}"
+
+- name: conf | Create cfssl configurations
   copy:
     content: "{{ item.value.configuration | to_nice_json }}"
     dest: "{{ item.value.configurations_path }}"
   with_items: "{{ certificate_directive | dict2items }}"
 
-- name: Create Certs | Create certificate dir
+- name: show vars
+  debug: 
+    var: item
+  with_items: "{{ command_run | dict2items }}"
+
+- name: create CertDir
   file:
     state: directory
-    dest: "{{ node_certificate.path }}"
-
-- name: debug
-  debug:
-    var: node_certificate.configuration
-
-- name: Create Certs | Create cfssl Node
-  copy:
-    content: "{{ node_certificate.configuration | to_nice_json }}"
-    dest: "{{ node_certificate.configurations_path }}"
-
-# Pause for 5 minutes to build app cache.
-- name: random wait
-  pause:
-    seconds: "{{ (3,15) | random }}"
-
-- name: Create Certs | create CA in "{{ certificate_directive.ca.path }}" wit conf "{{ certificate_directive.ca.configurations_path }}"
-  shell: "cfssl gencert -initca {{ certificate_directive.ca.configurations_path }} | cfssljson -bare {{ certificate_directive.ca.certificate_name }}"
+    dest: "{{ item.value.chdir }}"
+  with_items: "{{ command_run | dict2items }}"
+  
+- name: Create Certs |  
+  shell: "{{ item.value.shell }}"
   args:
-    chdir: "{{ certificate_directive.ca.path }}/"
-    creates: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
-  delegate_to: "{{ keyring_host }}"
-
-- name: Create Certs | create  in "{{ certificate_directive.intermediate_ca.path }}" wit conf "{{ certificate_directive.intermediate_ca.configurations_path }}"
-  shell: "cfssl gencert -initca {{ certificate_directive.intermediate_ca.configurations_path }} | cfssljson -bare {{ certificate_directive.intermediate_ca.certificate_name }}"
-  args:
-    chdir: "{{ certificate_directive.intermediate_ca.path }}/"
-    creates: "{{ certificate_directive.intermediate_ca.path }}/{{ certificate_directive.intermediate_ca.certificate_name }}.pem"
-  delegate_to: "{{ keyring_host }}"
-
-- name: Create Certs | create  in "{{ certificate_directive.intermediate_ca.path }}" wit conf "{{ certificate_directive.intermediate_ca.configurations_path }}"
-  shell: "cfssl gencert -initca {{ certificate_directive.intermediate_ca.configurations_path }} | cfssljson -bare {{ certificate_directive.intermediate_ca.certificate_name }}"
-  args:
-    chdir: "{{ certificate_directive.intermediate_ca.path }}/"
-    creates: "{{ certificate_directive.intermediate_ca.path }}/{{ certificate_directive.intermediate_ca.certificate_name }}.pem"
-  delegate_to: "{{ keyring_host }}"
-
-- name: Create Certs | create  in "{{ node_certificate.path }}" wit conf "{{ node_certificate.configurations_path }}"
-  shell: "cfssl gencert -initca {{ node_certificate.configurations_path }} | cfssljson -bare {{ node_certificate.certificate_name }}"
-  args:
-    chdir: "{{ node_certificate.path }}/"
-    creates: "{{ node_certificate.path }}/{{ node_certificate.certificate_name }}.pem"
-  delegate_to: "{{ keyring_host }}"
-
-- name: Create Certs | copy ca-crt to node folder
-  copy:
-    src: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
-    dest: "{{ node_certificate.path }}/ca.pem"
-    remote_src: yes
-  delegate_to: "{{ keyring_host }}"
+    chdir: "{{ item.value.chdir }}/"
+    creates: "{{ item.value.creates }}"
+  delegate_to: "{{ item.value.delegate_to }}"
+  with_items: "{{ command_run | dict2items }}"

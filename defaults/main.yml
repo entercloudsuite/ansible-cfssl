@@ -89,50 +89,20 @@ certificate_directive:
           ST: Italy
       ca:
         expiry: 42720h
-
-  intermediate_ca:
-    path: "{{ certificate_base_path }}/intermediate"
-    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate-ca.json"
-    certificate_name: intermediate_ca
+  node_certificate:
+    path: "{{ certificate_base_path }}/node/{{ ansible_hostname }}"
+    configurations_path: "{{ certificate_configurations_base_path_organizations }}/node-{{ansible_hostname}}.json"
+    certificate_name: server
     configuration:
-      CN: Example-intermediate-CA
+      CN: Server
+      hosts:
+        - 127.0.0.1
+        - localhost
+        - "{{ ansible_hostname }}.{{ base_domain }}"
+        - "{{ ansible_fqdn }}"
       key:
         algo: rsa
         size: 2048
-      names:
-        - C: IT
-          L: Milano
-          O: Example, SPA
-          OU: MyService Cluster Company SPA
-          ST: Italy
-      ca:
-        expiry: 42720h
-  intermediate_conf:
-    path: "{{ certificate_base_path }}/intermediate"
-    configurations_path: "{{ certificate_configurations_base_path_organizations }}/intermediate.json"
-    configuration:
-      signing:
-        default:
-          expiry: 43800h
-        profiles:
-          cluster:
-            usages:
-              - signing
-              - key encipherment
-              - cert sign
-              - crl sign
-              - server auth
-              - client auth
-            ca_constraint:
-              is_ca: true
-          development:
-            usages:
-              - signing
-              - key encipherment
-              - cert sign
-              - crl sign
-            ca_constraint:
-              is_ca: true
   certificate_config:
     path: "{{ certificate_base_path }}/certificate"
     configurations_path: "{{ certificate_configurations_base_path_organizations }}/certificate.json"
@@ -142,12 +112,14 @@ certificate_directive:
           expiry: 43800h
         profiles:
           server:
+            expiry: 43800h
             usages:
               - signing
               - digital signing
               - key encipherment
               - server auth
           peer:
+            expiry: 43800h
             usages:
               - signing
               - digital signature
@@ -155,20 +127,21 @@ certificate_directive:
               - client auth
               - server auth
           client:
+            expiry: 43800h
             usages:
               - signing
               - digital signature
               - key encipherment
               - client auth
 
-node_certificate:
-  path: "{{ certificate_base_path }}/node/{{ ansible_hostname }}"
-  configurations_path: "{{ certificate_configurations_base_path_organizations }}/node-{{ansible_hostname}}.json"
-  certificate_name: server
-  configuration:
-    CN: Server
-    hosts:
-      - 127.0.0.1
-      - localhost
-      - "{{ ansible_hostname }}.{{ base_domain }}"
-      - "{{ ansible_fqdn }}"
+command_run:
+  inti_ca:
+    shell: "cfssl gencert -initca {{ certificate_directive.ca.configurations_path }} | cfssljson -bare {{ certificate_directive.ca.certificate_name }}"
+    chdir: "{{ certificate_directive.ca.path }}/"
+    creates: "{{certificate_directive.ca.path}}/{{ certificate_directive.ca.certificate_name }}.pem"
+    delegate_to: "{{ ansible_hostname }}"
+  client_cert:
+    shell: "cfssl gencert -ca={{certificate_directive.ca.path}}/ca.pem -ca-key={{certificate_directive.ca.path}}/ca-key.pem -config={{ certificate_directive.certificate_config.configurations_path }} -profile=client {{ certificate_directive.node_certificate.configurations_path }} | cfssljson -bare {{ ansible_hostname }}-client"
+    chdir: "{{ certificate_directive.node_certificate.path }}/"
+    creates: "{{ certificate_directive.node_certificate.path }}/{{ ansible_hostname }}-client.pem"
+    delegate_to: "{{ ansible_hostname }}"

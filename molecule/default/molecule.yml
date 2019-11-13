@@ -7,11 +7,6 @@ lint:
   name: yamllint
 platforms:
   - name: node-1
-    groups:
-      - configure
-  - name: node-2
-    groups:
-      - install
 provisioner:
   name: ansible
   options:
