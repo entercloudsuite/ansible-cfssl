@@ -4,7 +4,7 @@
   pause:
     seconds: "{{ (1,4) | random }}"
 
-- name: Create Certs | 
+- name: Create Certs | Show vars certificate directive
   debug:
     var: item
   with_items: "{{ certificate_directive | dict2items }}"
@@ -39,3 +39,5 @@
     creates: "{{ item.value.creates }}"
   delegate_to: "{{ item.value.delegate_to }}"
   with_items: "{{ command_run | dict2items }}"
+  tags:
+    - skip_ansible_lint
