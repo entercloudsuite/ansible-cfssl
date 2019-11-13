@@ -1,46 +1,38 @@
 ---
-#- name: random wait
-#  pause:
-#    seconds: "{{ (3,15) | random }}"
 
-# - name: Debug
-#   debug:
-#     var: item.value.chdir
-#   with_items: "{{ command_run | dict2items }}"
-# 
-# - name: show vars
-#   debug:
-#     msg: "{{ node_certificate.configuration | to_json }}"
+- name: Create Certs | random wait
+  pause:
+    seconds: "{{ (1,4) | random }}"
 
-- name: show vars
-  debug: 
+- name: Create Certs | 
+  debug:
     var: item
   with_items: "{{ certificate_directive | dict2items }}"
 
-- name: conf | Create directory tree
+- name: Create Certs | Create directory tree
   file:
     state: directory
     dest: "{{ item }}"
   with_items: "{{ dir_list }}"
 
-- name: conf | Create cfssl configurations
+- name: Create Certs | Create cfssl configurations
   copy:
     content: "{{ item.value.configuration | to_nice_json }}"
     dest: "{{ item.value.configurations_path }}"
   with_items: "{{ certificate_directive | dict2items }}"
 
-- name: show vars
-  debug: 
+- name: Create Certs | Debug Show vars command_run
+  debug:
     var: item
   with_items: "{{ command_run | dict2items }}"
 
-- name: create CertDir
+- name: Create Certs | CertDir
   file:
     state: directory
     dest: "{{ item.value.chdir }}"
   with_items: "{{ command_run | dict2items }}"
-  
-- name: Create Certs |  
+
+- name: Create Certs |  Use cfssl for create certificates
   shell: "{{ item.value.shell }}"
   args:
     chdir: "{{ item.value.chdir }}/"
